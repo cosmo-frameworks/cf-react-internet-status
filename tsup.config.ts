@@ -6,7 +6,10 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  treeshake: true,
+  // NOT enabling `treeshake`: it runs the output back through rollup, which
+  // strips module-level directives and silently drops the 'use client' banner
+  // below. Consumer bundlers tree-shake this anyway, and `sideEffects: false`
+  // is declared in package.json.
   target: 'es2020',
   external: ['react'],
   outExtension: ({ format }) => ({ js: format === 'esm' ? '.mjs' : '.cjs' }),

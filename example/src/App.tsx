@@ -78,8 +78,8 @@ function Dashboard() {
         ) : (
           <p>
             <code>
-              {quality.effectiveType} · {quality.downlink} Mbps ·{' '}
-              {quality.rtt} ms · slow: {String(quality.isSlow)}
+              {quality.effectiveType} · {quality.downlink} Mbps · {quality.rtt}{' '}
+              ms · slow: {String(quality.isSlow)}
             </code>
           </p>
         )}
@@ -98,7 +98,15 @@ function Dashboard() {
 
       <div style={box}>
         <h2>useOnReconnect log</h2>
-        {log.length === 0 ? <p>—</p> : <ul>{log.map((l, i) => <li key={i}>{l}</li>)}</ul>}
+        {log.length === 0 ? (
+          <p>—</p>
+        ) : (
+          <ul>
+            {log.map((l, i) => (
+              <li key={i}>{l}</li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <InternetStatus hideWhenOnline variant="banner" position="bottom" />
@@ -121,9 +129,9 @@ export function App() {
     >
       <h1>cf-react-internet-status</h1>
       <p>
-        Toggle DevTools&apos; offline mode, or block the probe URL under
-        Network → &ldquo;Block request URL&rdquo; while staying online — that is
-        the captive-portal case <code>navigator.onLine</code> cannot detect.
+        Toggle DevTools&apos; offline mode, or block the probe URL under Network
+        → &ldquo;Block request URL&rdquo; while staying online — that is the
+        captive-portal case <code>navigator.onLine</code> cannot detect.
       </p>
 
       <div style={box}>

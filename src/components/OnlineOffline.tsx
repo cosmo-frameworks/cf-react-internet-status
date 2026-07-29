@@ -11,12 +11,11 @@ export interface ConditionalProps {
 }
 
 /** Renders its children only while connected. */
-export function Online({
-  children,
-  useReachability = true,
-}: ConditionalProps) {
+export function Online({ children, useReachability = true }: ConditionalProps) {
   const state = useInternetStatusResolved();
-  const connected = useReachability ? state.status === 'online' : state.isOnline;
+  const connected = useReachability
+    ? state.status === 'online'
+    : state.isOnline;
   return connected ? <>{children}</> : null;
 }
 

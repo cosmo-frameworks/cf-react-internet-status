@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach, beforeEach, vi } from 'vitest';
+import { act } from '@testing-library/react';
 import { resetDefaultStore } from '../src/core/store';
 
 /**
@@ -35,6 +36,17 @@ export function setHidden(hidden: boolean): void {
 /** A resolved, reachable-looking response. */
 export const okResponse = () =>
   Promise.resolve({ type: 'basic', ok: true, status: 200 } as Response);
+
+/**
+ * Flush pending microtasks inside `act`, so a probe settling mid-test does not
+ * produce an "update was not wrapped in act(...)" warning. Needed by tests
+ * that use the shared default store, where probing is on.
+ */
+export async function flushProbes(): Promise<void> {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 beforeEach(() => {
   setOnlineSilently(true);

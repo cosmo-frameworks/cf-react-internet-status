@@ -66,5 +66,5 @@ We use [Changesets](https://github.com/changesets/changesets):
 npx changeset          # describe the change and pick a bump
 ```
 
-Merging to `master` opens a "Version Packages" PR. Merging *that* publishes to
+Merging to `master` opens a "Version Packages" PR. Merging _that_ publishes to
 npm with provenance.

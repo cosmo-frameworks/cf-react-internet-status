@@ -55,10 +55,7 @@ export function useInternetStatus(
 
   const state = useNetworkStoreState(store);
 
-  return useMemo(
-    () => ({ ...state, recheck: store.recheck }),
-    [state, store]
-  );
+  return useMemo(() => ({ ...state, recheck: store.recheck }), [state, store]);
 }
 
 export default useInternetStatus;

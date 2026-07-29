@@ -63,18 +63,23 @@ describe('probeOnce', () => {
   });
 
   it('sets no-store and appends a cache-busting parameter', async () => {
-    const fetchMock = vi.fn(() => okResponse());
+    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+      okResponse()
+    );
     await probeOnce('/favicon.ico', { ...base, fetch: fetchMock });
 
-    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toContain('_cfis=');
-    expect(init.cache).toBe('no-store');
-    expect(init.method).toBe('HEAD');
-    expect(init.credentials).toBe('omit');
+    const [input, init] = fetchMock.mock.calls[0] ?? [];
+    expect(typeof input).toBe('string');
+    expect(input as string).toContain('_cfis=');
+    expect(init?.cache).toBe('no-store');
+    expect(init?.method).toBe('HEAD');
+    expect(init?.credentials).toBe('omit');
   });
 
   it('skips the cache-busting parameter when disabled', async () => {
-    const fetchMock = vi.fn(() => okResponse());
+    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+      okResponse()
+    );
     await probeOnce('/favicon.ico', {
       ...base,
       cacheBust: false,

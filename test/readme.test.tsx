@@ -13,9 +13,10 @@ import { useInternetStatus } from '../src/hooks/useInternetStatus';
 import { InternetStatus } from '../src/components/InternetStatus';
 import { Online, Offline } from '../src/components/OnlineOffline';
 import { useOnReconnect } from '../src/hooks/useOnReconnect';
+import { flushProbes } from './setup';
 
 describe('README examples', () => {
-  it('quick start: provider-free hook', () => {
+  it('quick start: provider-free hook', async () => {
     function ConnectionBanner() {
       const { status } = useInternetStatus();
       return <p>{status === 'offline' ? 'No connection' : 'Connected'}</p>;
@@ -23,6 +24,7 @@ describe('README examples', () => {
 
     expect(() => render(<ConnectionBanner />)).not.toThrow();
     expect(screen.getByText('Connected')).toBeInTheDocument();
+    await flushProbes();
   });
 
   it('with a provider', () => {
@@ -43,7 +45,7 @@ describe('README examples', () => {
     expect(screen.getByText('Connected.')).toBeInTheDocument();
   });
 
-  it('ready-made components, with no provider', () => {
+  it('ready-made components, with no provider', async () => {
     expect(() =>
       render(
         <>
@@ -57,6 +59,7 @@ describe('README examples', () => {
         </>
       )
     ).not.toThrow();
+    await flushProbes();
   });
 
   it('useOnReconnect recipe', () => {

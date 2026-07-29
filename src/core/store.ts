@@ -5,7 +5,11 @@ import {
 } from './constants';
 import { canUseDOM, canUseDocument, isHidden, readOnLine } from './env';
 import { probeAll, type ResolvedProbeConfig } from './probe';
-import { isSlowConnection, readConnection, subscribeConnection } from './connection';
+import {
+  isSlowConnection,
+  readConnection,
+  subscribeConnection,
+} from './connection';
 import type {
   InternetStatusOptions,
   InternetStatusState,
@@ -24,7 +28,7 @@ import type {
 const SERVER_SNAPSHOT: InternetStatusState = Object.freeze({
   isOnline: true,
   isInternetReachable: null,
-  status: 'unknown' as NetworkStatus,
+  status: 'unknown',
   isChecking: false,
   since: 0,
   lastCheckedAt: null,
@@ -33,10 +37,7 @@ const SERVER_SNAPSHOT: InternetStatusState = Object.freeze({
   isSlow: false,
 });
 
-function shallowEqual(
-  a: InternetStatusState,
-  b: InternetStatusState
-): boolean {
+function shallowEqual(a: InternetStatusState, b: InternetStatusState): boolean {
   return (
     a.isOnline === b.isOnline &&
     a.isInternetReachable === b.isInternetReachable &&
@@ -75,7 +76,9 @@ export function createNetworkStore(
     slowThresholds: { ...DEFAULT_SLOW_THRESHOLDS, ...options.slowThresholds },
   };
 
-  const urls = Array.isArray(opts.probe.url) ? opts.probe.url : [opts.probe.url];
+  const urls = Array.isArray(opts.probe.url)
+    ? opts.probe.url
+    : [opts.probe.url];
 
   const listeners = new Set<() => void>();
   let snapshot: InternetStatusState = SERVER_SNAPSHOT;
@@ -124,8 +127,7 @@ export function createNetworkStore(
     }
     next.status = computeStatus(next);
     next.isSlow = isSlowConnection(next.connection, opts.slowThresholds);
-    next.since =
-      next.status === snapshot.status ? snapshot.since : Date.now();
+    next.since = next.status === snapshot.status ? snapshot.since : Date.now();
 
     if (shallowEqual(next, snapshot)) return;
 

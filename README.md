@@ -6,20 +6,20 @@ internet reachability probing, not just `navigator.onLine`.
 > `navigator.onLine` tells you a cable is plugged in.
 > This tells you whether the internet actually answers.
 
-Zero dependencies. ~3 KB. React 18 & 19.
+Zero dependencies. ~3.6 KB minified + brotlied. React 18 & 19.
 
 ## Why
 
 `navigator.onLine` reports whether a **network interface** is up — not whether
 you can reach anything. It returns `true` in every one of these cases:
 
-| Situation                        | `navigator.onLine` | Reality      |
-| -------------------------------- | ------------------ | ------------ |
-| Connected to a captive portal    | `true`             | No internet  |
-| Router up, WAN link down         | `true`             | No internet  |
-| DNS resolver broken              | `true`             | No internet  |
-| VPN dropped mid-session          | `true`             | No internet  |
-| Airplane mode                    | `false`            | No internet  |
+| Situation                     | `navigator.onLine` | Reality     |
+| ----------------------------- | ------------------ | ----------- |
+| Connected to a captive portal | `true`             | No internet |
+| Router up, WAN link down      | `true`             | No internet |
+| DNS resolver broken           | `true`             | No internet |
+| VPN dropped mid-session       | `true`             | No internet |
+| Airplane mode                 | `false`            | No internet |
 
 This package keeps the cheap signal (`isOnline`) and adds a verified one
 (`isInternetReachable`) backed by an actual request.
@@ -74,7 +74,7 @@ function App() {
 }
 ```
 
-> **The hook must be called in a component *below* the provider** — not in the
+> **The hook must be called in a component _below_ the provider** — not in the
 > same component that renders it. A component cannot consume a context it
 > renders itself.
 
@@ -139,18 +139,18 @@ Render off `status` unless you specifically need the distinction.
 
 Returns `InternetStatusState & { recheck }`.
 
-| Field                 | Type                                               | Description                                     |
-| --------------------- | -------------------------------------------------- | ----------------------------------------------- |
-| `isOnline`            | `boolean`                                           | `navigator.onLine`.                             |
-| `isInternetReachable` | `boolean \| null`                                   | Probe-verified. `null` while unknown.           |
-| `status`              | `'online' \| 'offline' \| 'checking' \| 'unknown'`  | Derived rollup — render off this.               |
-| `isChecking`          | `boolean`                                           | A probe is in flight.                           |
-| `since`               | `number`                                            | Epoch ms of the last `status` change.           |
-| `lastCheckedAt`       | `number \| null`                                    | Epoch ms of the last completed probe.           |
-| `failureCount`        | `number`                                            | Consecutive probe failures.                     |
-| `connection`          | `ConnectionInfo \| null`                            | Network Information API data.                   |
-| `isSlow`              | `boolean`                                           | Heuristic over `connection`.                    |
-| `recheck()`           | `() => Promise<boolean>`                            | Probe now. Dedupes with any in-flight check.    |
+| Field                 | Type                                               | Description                                  |
+| --------------------- | -------------------------------------------------- | -------------------------------------------- |
+| `isOnline`            | `boolean`                                          | `navigator.onLine`.                          |
+| `isInternetReachable` | `boolean \| null`                                  | Probe-verified. `null` while unknown.        |
+| `status`              | `'online' \| 'offline' \| 'checking' \| 'unknown'` | Derived rollup — render off this.            |
+| `isChecking`          | `boolean`                                          | A probe is in flight.                        |
+| `since`               | `number`                                           | Epoch ms of the last `status` change.        |
+| `lastCheckedAt`       | `number \| null`                                   | Epoch ms of the last completed probe.        |
+| `failureCount`        | `number`                                           | Consecutive probe failures.                  |
+| `connection`          | `ConnectionInfo \| null`                           | Network Information API data.                |
+| `isSlow`              | `boolean`                                          | Heuristic over `connection`.                 |
+| `recheck()`           | `() => Promise<boolean>`                           | Probe now. Dedupes with any in-flight check. |
 
 Options are read **once**, on first render. Passing options creates a store
 private to that call site; omitting them shares the default store.
@@ -192,36 +192,36 @@ consumer once per second.
 
 Accepts every `InternetStatusOptions` field, plus:
 
-| Prop        | Type                                  | Description                                |
-| ----------- | ------------------------------------- | ------------------------------------------ |
-| `store`     | `NetworkStore`                        | Inject a pre-built store (tests, multi-root). |
-| `onOnline`  | `(state) => void`                     | Fired on transition to online.             |
-| `onOffline` | `(state) => void`                     | Fired on transition to offline.            |
-| `onChange`  | `(state, previous) => void`           | Fired on any status change.                |
+| Prop        | Type                        | Description                                   |
+| ----------- | --------------------------- | --------------------------------------------- |
+| `store`     | `NetworkStore`              | Inject a pre-built store (tests, multi-root). |
+| `onOnline`  | `(state) => void`           | Fired on transition to online.                |
+| `onOffline` | `(state) => void`           | Fired on transition to offline.               |
+| `onChange`  | `(state, previous) => void` | Fired on any status change.                   |
 
 Callbacks are ref-latched: inline arrows do not cause re-subscription. They do
 not fire on mount.
 
 ### `<InternetStatus>`
 
-| Prop              | Type                                       | Default    | Description                                            |
-| ----------------- | ------------------------------------------ | ---------- | ------------------------------------------------------ |
-| `className`       | `string`                                   | —          | On the wrapper.                                        |
-| `style`           | `CSSProperties`                            | —          | On the wrapper.                                        |
-| `as`              | `ElementType`                              | `'div'`    | Wrapper element.                                       |
-| `online`          | `ReactNode`                                | built-in   | Content while online.                                  |
-| `offline`         | `ReactNode`                                | built-in   | Content while offline.                                 |
-| `checking`        | `ReactNode`                                | built-in   | Content during the first probe.                        |
-| `unknown`         | `ReactNode`                                | built-in   | Content before anything is known.                      |
-| `children`        | `(state) => ReactNode`                     | —          | Render-prop. Wins over the above; drops the wrapper.    |
-| `hideWhenOnline`  | `boolean`                                  | `false`    | Render nothing while connected.                        |
-| `useReachability` | `boolean`                                  | `true`     | `false` restores v1 semantics (`navigator.onLine` only). |
-| `autoDismissMs`   | `number`                                   | —          | Hide the *connected* message after N ms.               |
-| `variant`         | `'inline' \| 'banner' \| 'toast'`          | `'inline'` | Layout.                                                |
-| `position`        | `'top' \| 'bottom'`                        | `'top'`    | For banner/toast.                                      |
-| `unstyled`        | `boolean`                                  | `false`    | Emit no inline styles.                                 |
-| `role`            | `string`                                   | auto       | Overrides the default ARIA role.                       |
-| `aria-live`       | `'off' \| 'polite' \| 'assertive'`         | auto       | Overrides the default politeness.                      |
+| Prop              | Type                               | Default    | Description                                              |
+| ----------------- | ---------------------------------- | ---------- | -------------------------------------------------------- |
+| `className`       | `string`                           | —          | On the wrapper.                                          |
+| `style`           | `CSSProperties`                    | —          | On the wrapper.                                          |
+| `as`              | `ElementType`                      | `'div'`    | Wrapper element.                                         |
+| `online`          | `ReactNode`                        | built-in   | Content while online.                                    |
+| `offline`         | `ReactNode`                        | built-in   | Content while offline.                                   |
+| `checking`        | `ReactNode`                        | built-in   | Content during the first probe.                          |
+| `unknown`         | `ReactNode`                        | built-in   | Content before anything is known.                        |
+| `children`        | `(state) => ReactNode`             | —          | Render-prop. Wins over the above; drops the wrapper.     |
+| `hideWhenOnline`  | `boolean`                          | `false`    | Render nothing while connected.                          |
+| `useReachability` | `boolean`                          | `true`     | `false` restores v1 semantics (`navigator.onLine` only). |
+| `autoDismissMs`   | `number`                           | —          | Hide the _connected_ message after N ms.                 |
+| `variant`         | `'inline' \| 'banner' \| 'toast'`  | `'inline'` | Layout.                                                  |
+| `position`        | `'top' \| 'bottom'`                | `'top'`    | For banner/toast.                                        |
+| `unstyled`        | `boolean`                          | `false`    | Emit no inline styles.                                   |
+| `role`            | `string`                           | auto       | Overrides the default ARIA role.                         |
+| `aria-live`       | `'off' \| 'polite' \| 'assertive'` | auto       | Overrides the default politeness.                        |
 
 Accessible by default: offline gets `role="alert"` + `aria-live="assertive"`;
 everything else gets `role="status"` + `aria-live="polite"`.
@@ -276,18 +276,18 @@ package checks the property itself.
   event-driven-only checks.
 - `navigator.connection` is Chromium-only. `useNetworkQuality` degrades to
   nulls rather than throwing.
-- The probe answers "is *that URL* reachable". It won't detect "the internet is
+- The probe answers "is _that URL_ reachable". It won't detect "the internet is
   fine but my API is down" unless you point it at your API.
 
 ## Migrating from v1
 
-| v1                                        | v2                                                       |
-| ----------------------------------------- | -------------------------------------------------------- |
-| `useInternetStatus()` → `boolean`         | → `{ isOnline, status, ... }`. Use `.isOnline`.           |
-| React 17 supported                        | React 18+ required (`useSyncExternalStore`).              |
-| `<InternetStatus/>` needs a provider      | Works standalone too.                                     |
+| v1                                        | v2                                                                                           |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `useInternetStatus()` → `boolean`         | → `{ isOnline, status, ... }`. Use `.isOnline`.                                              |
+| React 17 supported                        | React 18+ required (`useSyncExternalStore`).                                                 |
+| `<InternetStatus/>` needs a provider      | Works standalone too.                                                                        |
 | `<InternetStatus/>` renders a plain `div` | Adds ARIA roles and reachability awareness. `useReachability={false}` restores v1 behaviour. |
-| Deep imports into `dist/`                 | Blocked by the `exports` map — import from the root.      |
+| Deep imports into `dist/`                 | Blocked by the `exports` map — import from the root.                                         |
 
 `useInternetStatusContext()` still returns `{ isOnline }` (plus new fields), so
 existing destructuring keeps working.

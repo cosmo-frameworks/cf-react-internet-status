@@ -45,7 +45,9 @@ const defaults: Record<NetworkStatus, ReactNode> = {
   online: <p style={{ color: 'green', margin: 0 }}>You are online!</p>,
   offline: <p style={{ color: 'red', margin: 0 }}>You are offline!</p>,
   checking: <p style={{ color: 'gray', margin: 0 }}>Checking connection…</p>,
-  unknown: <p style={{ color: 'gray', margin: 0 }}>Connection status unknown</p>,
+  unknown: (
+    <p style={{ color: 'gray', margin: 0 }}>Connection status unknown</p>
+  ),
 };
 
 function positionStyles(
@@ -104,10 +106,9 @@ export function InternetStatus({
   if (dismissed) return null;
 
   const content =
-    ({ online, offline, checking, unknown } as Record<
-      NetworkStatus,
-      ReactNode
-    >)[status] ?? defaults[status];
+    (
+      { online, offline, checking, unknown } as Record<NetworkStatus, ReactNode>
+    )[status] ?? defaults[status];
 
   // Offline is an interruption worth announcing immediately; everything else
   // is a status update that should wait its turn.

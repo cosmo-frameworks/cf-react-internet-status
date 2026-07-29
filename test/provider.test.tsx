@@ -92,11 +92,43 @@ describe('InternetStatusProvider', () => {
     expect(onOnline).toHaveBeenCalledTimes(1);
   });
 
+  it('does not fire callbacks while booting through checking', async () => {
+    const onOnline = vi.fn();
+    const onChange = vi.fn();
+    const fetchMock = vi.fn(() =>
+      Promise.resolve({ type: 'basic', ok: true, status: 200 } as Response)
+    );
+
+    function Child() {
+      const { status } = useInternetStatusContext();
+      return <span data-testid="status">{status}</span>;
+    }
+
+    render(
+      <InternetStatusProvider
+        probe={{ fetch: fetchMock, jitter: 0 }}
+        onOnline={onOnline}
+        onChange={onChange}
+      >
+        <Child />
+      </InternetStatusProvider>
+    );
+
+    // unknown → checking → online is the boot sequence, not a reconnection.
+    await waitFor(() =>
+      expect(screen.getByTestId('status')).toHaveTextContent('online')
+    );
+    expect(onOnline).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
+
+    // A genuine drop afterwards still reports.
+    act(() => setOnline(false));
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
   it('does not fire callbacks on a redundant same-status event', () => {
     const onChange = vi.fn();
-    render(
-      <InternetStatusProvider enableProbe={false} onChange={onChange} />
-    );
+    render(<InternetStatusProvider enableProbe={false} onChange={onChange} />);
     act(() => setOnline(true));
     act(() => setOnline(true));
     expect(onChange).not.toHaveBeenCalled();
@@ -114,8 +146,8 @@ describe('InternetStatusProvider', () => {
   });
 
   it('exposes recheck() through the context', async () => {
-    const fetchMock = vi.fn(
-      () => Promise.resolve({ type: 'basic', ok: true, status: 200 } as Response)
+    const fetchMock = vi.fn(() =>
+      Promise.resolve({ type: 'basic', ok: true, status: 200 } as Response)
     );
     let recheck!: () => Promise<boolean>;
     function Child() {

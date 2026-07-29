@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, act, waitFor } from '@testing-library/react';
 import { useInternetStatus } from '../src/hooks/useInternetStatus';
 import { getDefaultStore } from '../src/core/store';
-import { setOnline, setOnlineSilently, okResponse } from './setup';
+import { setOnline, setOnlineSilently, okResponse, flushProbes } from './setup';
 import type { InternetStatusOptions } from '../src/core/types';
 
 const noProbe: InternetStatusOptions = { enableProbe: false };
@@ -62,7 +62,7 @@ describe('useInternetStatus', () => {
     errorSpy.mockRestore();
   });
 
-  it('shares one store — and one set of listeners — across call sites', () => {
+  it('shares one store — and one set of listeners — across call sites', async () => {
     const addSpy = vi.spyOn(window, 'addEventListener');
     render(
       <>
@@ -77,6 +77,7 @@ describe('useInternetStatus', () => {
     // Ten components using the hook must not mean ten probe schedules.
     expect(onlineRegistrations).toBe(1);
     expect(getDefaultStore).toBeDefined();
+    await flushProbes();
   });
 
   it('reports probe-verified reachability', async () => {

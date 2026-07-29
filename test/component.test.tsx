@@ -4,7 +4,7 @@ import { render, screen, act } from '@testing-library/react';
 import { InternetStatus } from '../src/components/InternetStatus';
 import { Online, Offline } from '../src/components/OnlineOffline';
 import { InternetStatusProvider } from '../src/context/InternetStatusProvider';
-import { setOnline } from './setup';
+import { setOnline, flushProbes } from './setup';
 
 const wrap = (ui: ReactNode) =>
   render(
@@ -20,8 +20,11 @@ describe('<InternetStatus>', () => {
     expect(screen.getByText('You are offline!')).toBeInTheDocument();
   });
 
-  it('works without a provider', () => {
+  it('works without a provider', async () => {
+    // No provider → falls back to the shared default store, where probing is
+    // on, so the probe has to be flushed inside act.
     expect(() => render(<InternetStatus />)).not.toThrow();
+    await flushProbes();
   });
 
   it('accepts custom nodes per state', () => {

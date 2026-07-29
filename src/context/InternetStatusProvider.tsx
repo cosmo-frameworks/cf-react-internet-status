@@ -51,10 +51,16 @@ export function InternetStatusProvider({
   const previous = useRef<InternetStatusState | null>(null);
 
   useEffect(() => {
+    // 'unknown' and 'checking' are boot states: we have not established
+    // anything yet. Treating them as a baseline would make the boot sequence
+    // (unknown → online) look like a reconnection and fire onOnline on every
+    // single mount.
+    if (state.status !== 'online' && state.status !== 'offline') return;
+
     const prev = previous.current;
     previous.current = state;
 
-    // The first run only establishes a baseline — no synthetic mount events.
+    // The first settled state is the baseline — no synthetic mount events.
     if (prev === null || prev.status === state.status) return;
 
     callbacks.current.onChange?.(state, prev);

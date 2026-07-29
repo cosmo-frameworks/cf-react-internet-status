@@ -89,11 +89,16 @@ export interface InternetStatusOptions {
   slowThresholds?: SlowThresholds;
 }
 
+/**
+ * Every method is annotated `this: void` because they are closure-based and
+ * meant to be detached — `useSyncExternalStore` receives `store.subscribe` and
+ * `store.getSnapshot` as bare references.
+ */
 export interface NetworkStore {
-  subscribe(listener: () => void): () => void;
-  getSnapshot(): InternetStatusState;
-  getServerSnapshot(): InternetStatusState;
+  subscribe(this: void, listener: () => void): () => void;
+  getSnapshot(this: void): InternetStatusState;
+  getServerSnapshot(this: void): InternetStatusState;
   /** Force an immediate probe. Dedupes with any in-flight check. */
-  recheck(): Promise<boolean>;
-  destroy(): void;
+  recheck(this: void): Promise<boolean>;
+  destroy(this: void): void;
 }

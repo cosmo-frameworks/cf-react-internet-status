@@ -35,12 +35,19 @@ export function useOnReconnect(
     ? state.status === 'online'
     : state.isOnline;
 
+  // 'unknown' and 'checking' are boot states, not "disconnected". Counting
+  // them would make the boot sequence (unknown → online) look like a
+  // reconnection and fire on every mount.
+  const settled = state.status === 'online' || state.status === 'offline';
+
   useEffect(() => {
+    if (!settled) return;
+
     const previous = wasConnected.current;
     wasConnected.current = connected;
 
     if (previous === null) {
-      // Baseline. Only fire now if explicitly asked to.
+      // First settled state is the baseline. Only fire if explicitly asked to.
       if (connected && fireOnMount) {
         callbackRef.current({ offlineDurationMs: 0, state });
       }
@@ -55,5 +62,5 @@ export function useOnReconnect(
     }
     // `state` is in the deps for correctness, but it cannot cause a spurious
     // call: the edge guard above only fires on a false → true transition.
-  }, [connected, fireOnMount, state]);
+  }, [settled, connected, fireOnMount, state]);
 }
