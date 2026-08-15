@@ -1,22 +1,31 @@
 {
-  "include": ["src", "types"],
+  "include": ["src", "test", "*.config.ts"],
   "compilerOptions": {
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
-    "importHelpers": true,
-    "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./src",
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "moduleResolution": "node",
-    "jsx": "react",
+
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+
+    "declaration": true,
+    "sourceMap": true,
+
+    // tsup owns emit (its `dts: true` generates declarations).
+    // `tsc` is typecheck-only here.
+    "noEmit": true
   }
 }

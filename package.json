@@ -1,60 +1,113 @@
 {
+  "name": "cf-react-internet-status",
   "version": "1.0.0",
+  "description": "SSR-safe React hook, context provider and component for online/offline detection.",
+  "keywords": [
+    "react",
+    "hooks",
+    "offline",
+    "online",
+    "internet",
+    "connectivity",
+    "network",
+    "navigator.onLine",
+    "ssr",
+    "typescript"
+  ],
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "author": "Ridel Saavedra Flores",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cosmo-frameworks/cf-react-internet-status.git"
+  },
+  "homepage": "https://github.com/cosmo-frameworks/cf-react-internet-status#readme",
+  "bugs": {
+    "url": "https://github.com/cosmo-frameworks/cf-react-internet-status/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
     "dist",
-    "src"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "check:exports": "publint && attw --pack .",
+    "prepublishOnly": "npm run build",
+    "release": "changeset publish"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "cf-react-internet-status",
-  "author": "Ridel Saavedra Flores",
-  "module": "dist/cf-react-internet-status.esm.js",
   "size-limit": [
     {
-      "path": "dist/cf-react-internet-status.cjs.production.min.js",
-      "limit": "10 KB"
+      "name": "esm",
+      "path": "dist/index.mjs",
+      "limit": "4 KB"
     },
     {
-      "path": "dist/cf-react-internet-status.esm.js",
-      "limit": "10 KB"
+      "name": "cjs",
+      "path": "dist/index.cjs",
+      "limit": "4.25 KB"
     }
   ],
   "devDependencies": {
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
-    "husky": "^9.1.7",
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@changesets/cli": "^2.28.1",
+    "@eslint/js": "^9.22.0",
+    "@size-limit/preset-small-lib": "^11.2.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitest/coverage-v8": "^3.0.8",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "jsdom": "^26.0.0",
-    "size-limit": "^11.1.6",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
+    "prettier": "^3.5.3",
+    "publint": "^0.3.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "size-limit": "^11.2.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^3.0.8"
   }
 }

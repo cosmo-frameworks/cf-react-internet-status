@@ -1,0 +1,18 @@
+{
+  "include": ["src", "vite.config.ts"],
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "cf-react-internet-status": ["../src/index.ts"]
+    }
+  }
+}
