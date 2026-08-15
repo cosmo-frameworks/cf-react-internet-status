@@ -9,8 +9,17 @@ permissions:
   pull-requests: write
   id-token: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  # Nothing reaches npm without passing the exact checks a PR has to pass.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   release:
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +31,9 @@ jobs:
       - run: npm ci
       - uses: changesets/action@v1
         with:
-          version: npx changeset version
+          # `changeset version` only bumps package.json, so the lockfile has to
+          # be refreshed or it keeps reporting the previous version forever.
+          version: npx changeset version && npm install --package-lock-only
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

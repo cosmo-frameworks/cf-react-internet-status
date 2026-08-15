@@ -1,6 +1,6 @@
 {
   "name": "cf-react-internet-status",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "SSR-safe React hook, context provider and component for online/offline detection.",
   "keywords": [
     "react",
