@@ -63,6 +63,7 @@
     "size": "size-limit",
     "check:exports": "publint && attw --pack .",
     "prepublishOnly": "npm run build",
+    "version-packages": "changeset version && npm install --package-lock-only",
     "release": "changeset publish"
   },
   "peerDependencies": {

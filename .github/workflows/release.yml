@@ -31,9 +31,10 @@ jobs:
       - run: npm ci
       - uses: changesets/action@v1
         with:
-          # `changeset version` only bumps package.json, so the lockfile has to
-          # be refreshed or it keeps reporting the previous version forever.
-          version: npx changeset version && npm install --package-lock-only
+          # These inputs are not run through a shell, so `&&` would be passed to
+          # the command as an argument. The lockfile refresh that has to follow
+          # `changeset version` lives in the `version-packages` script instead.
+          version: npm run version-packages
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
