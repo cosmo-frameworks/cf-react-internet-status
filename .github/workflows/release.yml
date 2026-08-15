@@ -25,7 +25,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Must be at least as new as the npm that writes the lockfile locally,
+          # or `npm install --package-lock-only` silently drops fields it does
+          # not know about (npm 10 strips the `libc` entries npm 11 writes).
+          node-version: 24
           cache: npm
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
