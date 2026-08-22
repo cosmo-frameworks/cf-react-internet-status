@@ -32,7 +32,7 @@ jobs:
           cache: npm
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           # These inputs are not run through a shell, so `&&` would be passed to
           # the command as an argument. The lockfile refresh that has to follow
